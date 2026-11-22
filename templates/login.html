@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极速赛道 · 登录</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
+</head>
+<body class="auth-page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand-mark"><span></span><span></span><span></span></div>
+      <h1>极速赛道</h1>
+      <p class="sub">登录后驶上赛道，圈数越多排名越靠前</p>
+      <form method="post" action="{{ url_for('login') }}">
+        <label>用户名
+          <input name="username" type="text" autocomplete="username" placeholder="输入用户名" required autofocus>
+        </label>
+        <label>密码
+          <input name="password" type="password" autocomplete="current-password" placeholder="输入密码" required>
+        </label>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <button class="btn primary" type="submit">进入车库</button>
+      </form>
+      <p class="switch">还没有账号？<a href="{{ url_for('register_page') }}">立即注册</a></p>
+    </div>
+  </div>
+</body>
+</html>

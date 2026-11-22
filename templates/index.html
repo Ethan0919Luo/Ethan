@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极速赛道</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
+</head>
+<body class="game-page">
+  <canvas id="game"></canvas>
+
+  <div class="hud">
+    <div class="hud-top">
+      <div class="pill"><span>车手</span><b>{{ username }}</b></div>
+      <div class="pill"><span>圈数</span><b id="laps">0</b></div>
+      <div class="pill"><span>速度</span><b id="speed">0</b><em>km/h</em></div>
+      <div class="pill"><span>本圈</span><b id="lap-time">0.0</b><em>s</em></div>
+      <div class="pill best"><span>最好成绩</span><b id="best-laps">{{ my_laps }}</b><em>圈</em></div>
+    </div>
+
+    <div class="hud-bottom">
+      <button id="restart-btn" class="btn">重新开始</button>
+      <button id="submit-btn" class="btn accent">提交成绩</button>
+      <form method="post" action="{{ url_for('logout') }}">
+        <button class="btn ghost" type="submit">退出</button>
+      </form>
+    </div>
+  </div>
+
+  <aside class="leaderboard">
+    <header>
+      <h2>圈数排行榜</h2>
+      <span id="my-rank" class="my-rank">—</span>
+    </header>
+    <ol id="lb-list">
+      <li class="loading">加载中…</li>
+    </ol>
+    <footer>
+      <span id="my-laps-label">我的最好成绩：{{ my_laps }} 圈</span>
+      <a href="{{ url_for('leaderboard') }}">完整排行榜</a>
+    </footer>
+  </aside>
+
+  <div id="tip" class="tip">
+    <b>W / ↑</b> 加速　<b>S / ↓</b> 刹车 / 倒车　<b>A D / ← →</b> 转向<br>
+    每完整跑完一圈自动计入成绩，圈数越多排名越高
+  </div>
+  <div id="toast" class="toast"></div>
+
+  <script src="{{ url_for('static', filename='three.min.js') }}?v=1"></script>
+  <script src="{{ url_for('static', filename='game.js') }}?v=5"></script>
+</body>
+</html>

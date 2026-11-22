@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极速赛道 · 排行榜</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
+</head>
+<body class="board-page">
+  <main class="board-wrap">
+    <header class="board-head">
+      <div>
+        <p class="eyebrow">LEADERBOARD</p>
+        <h1>圈数排行榜</h1>
+        <p class="sub">按累计最好圈数排序，圈数相同按用户名排序</p>
+      </div>
+      <a class="btn primary" href="{{ url_for('index') }}">返回赛道</a>
+    </header>
+
+    <table class="board-table">
+      <thead>
+        <tr><th>排名</th><th>车手</th><th>圈数</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr class="{% if u.username == me %}me{% endif %}">
+          <td class="rank">{{ loop.index }}</td>
+          <td class="name">{{ u.username }}{% if u.username == me %}<span class="tag">我</span>{% endif %}</td>
+          <td class="laps">{{ u.laps }} 圈</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" class="empty">还没有车手上榜，快去跑第一圈</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
