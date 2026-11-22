@@ -586,7 +586,7 @@
       color: 0xf5c400, metalness: 0.62, roughness: 0.26,
     });
     const paintDark = new THREE.MeshStandardMaterial({
-      color: 0xd9a900, metalness: 0.55, roughness: 0.35,
+      color: 0xc79f00, metalness: 0.55, roughness: 0.38,
     });
     const carbon = new THREE.MeshStandardMaterial({
       color: 0x121418, metalness: 0.55, roughness: 0.42,
@@ -600,11 +600,14 @@
     const tireMat = new THREE.MeshStandardMaterial({
       color: 0x0f1115, roughness: 0.95,
     });
+    const discMat = new THREE.MeshStandardMaterial({
+      color: 0x565c66, metalness: 0.9, roughness: 0.35,
+    });
     const headMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff, emissive: 0xdfefff, emissiveIntensity: 1.4,
+      color: 0xffffff, emissive: 0xdfefff, emissiveIntensity: 1.5,
     });
     const tailMat = new THREE.MeshStandardMaterial({
-      color: 0xff2a20, emissive: 0xff1208, emissiveIntensity: 1.6,
+      color: 0xff2a20, emissive: 0xff1208, emissiveIntensity: 1.7,
     });
 
     const add = (geo, mat, x, y, z) => {
@@ -616,89 +619,117 @@
     const box = (w, h, d, mat, x, y, z) =>
       add(new THREE.BoxGeometry(w, h, d), mat, x, y, z);
 
-    // 底盘 / 车体
-    box(1.9, 0.18, 4.5, carbon, 0, 0.3, 0);
-    box(1.78, 0.42, 3.5, paint, 0, 0.6, 0.05);
+    // 底盘
+    box(1.86, 0.16, 4.4, carbon, 0, 0.28, 0);
 
-    // 前部楔形车头
-    const nose = box(1.68, 0.28, 1.6, paint, 0, 0.58, 1.95);
-    nose.rotation.x = -0.05;
-    box(1.86, 0.1, 0.62, carbon, 0, 0.3, 2.5);
-    box(1.74, 0.26, 0.34, paint, 0, 0.48, 2.46);
-    box(0.92, 0.16, 0.1, carbon, 0, 0.36, 2.6);
-    const hood = box(1.56, 0.1, 1.42, paintDark, 0, 0.8, 1.4);
-    hood.rotation.x = 0.05;
-    box(0.035, 0.03, 1.2, carbon, -0.5, 0.86, 1.42);
-    box(0.035, 0.03, 1.2, carbon, 0.5, 0.86, 1.42);
+    // 中央车体
+    box(1.5, 0.4, 3.3, paint, 0, 0.58, 0.05);
 
-    // 前大灯
+    // 前后翼子板 + 轮拱
     for (const sx of [-1, 1]) {
-      const lamp = box(0.56, 0.09, 0.1, headMat, 0.56 * sx, 0.74, 2.4);
-      lamp.rotation.y = 0.3 * sx;
-      lamp.rotation.x = -0.1;
+      box(0.38, 0.36, 1.55, paint, 0.86 * sx, 0.7, 1.52);
+      box(0.4, 0.07, 1.2, paintDark, 0.94 * sx, 0.92, 1.52);
+      box(0.42, 0.4, 1.65, paint, 0.88 * sx, 0.72, -1.42);
+      box(0.44, 0.07, 1.3, paintDark, 0.95 * sx, 0.94, -1.42);
     }
 
-    // 侧裙 / 进气口 / 后视镜 / 轮眉
+    // 前部楔形车头
+    const nose = box(1.5, 0.22, 1.75, paint, 0, 0.54, 1.95);
+    nose.rotation.x = -0.04;
+    box(1.66, 0.1, 0.55, carbon, 0, 0.24, 2.55);
+    box(1.68, 0.26, 0.32, paint, 0, 0.46, 2.48);
+    box(0.5, 0.14, 0.12, carbon, 0, 0.36, 2.62);
     for (const sx of [-1, 1]) {
-      box(0.1, 0.2, 2.3, carbon, 0.9 * sx, 0.4, 0.1);
-      const intake = box(0.1, 0.26, 0.95, carbon, 0.92 * sx, 0.82, -1.05);
-      intake.rotation.z = 0.07 * sx;
-      box(0.03, 0.03, 0.22, carbon, 0.86 * sx, 1.0, 0.6);
-      const mirror = box(0.24, 0.08, 0.1, paint, 0.97 * sx, 1.03, 0.66);
-      mirror.rotation.y = -0.15 * sx;
+      box(0.4, 0.16, 0.3, carbon, 0.5 * sx, 0.38, 2.5);
+      const canard = box(0.3, 0.03, 0.28, carbon, 0.82 * sx, 0.5, 2.3);
+      canard.rotation.z = -0.12 * sx;
+    }
 
-      for (const fz of [1.48, -1.45]) {
-        box(0.32, 0.16, 1.0, paint, 0.94 * sx, 0.9, fz);
-      }
+    const hood = box(1.42, 0.08, 1.35, paint, 0, 0.79, 1.5);
+    hood.rotation.x = 0.05;
+    box(0.18, 0.02, 1.25, carbon, 0, 0.84, 1.5);
+    box(0.03, 0.025, 1.15, carbon, -0.42, 0.845, 1.5);
+    box(0.03, 0.025, 1.15, carbon, 0.42, 0.845, 1.5);
+
+    // Y 形日行灯
+    for (const sx of [-1, 1]) {
+      const lampA = box(0.34, 0.055, 0.08, headMat, 0.55 * sx, 0.7, 2.43);
+      lampA.rotation.y = 0.32 * sx;
+      const lampB = box(0.26, 0.055, 0.08, headMat, 0.66 * sx, 0.62, 2.36);
+      lampB.rotation.y = -0.5 * sx;
+      lampB.rotation.z = 0.35 * sx;
+    }
+
+    // 侧裙 / 侧进气 / 后视镜 / 车门缝
+    for (const sx of [-1, 1]) {
+      box(0.08, 0.14, 2.1, carbon, 0.87 * sx, 0.34, 0.12);
+      const intake = box(0.08, 0.24, 0.95, carbon, 0.9 * sx, 0.78, -1.0);
+      intake.rotation.z = 0.08 * sx;
+      box(0.03, 0.03, 0.22, carbon, 0.84 * sx, 1.0, 0.58);
+      const mirror = box(0.22, 0.07, 0.1, paint, 0.95 * sx, 1.02, 0.64);
+      mirror.rotation.y = -0.15 * sx;
+      box(0.015, 0.26, 0.02, carbon, 0.755 * sx, 0.62, 0.35);
     }
 
     // 座舱
-    const windshield = box(1.38, 0.06, 1.2, glass, 0, 1.0, 0.62);
-    windshield.rotation.x = -0.5;
+    const windshield = box(1.24, 0.05, 1.15, glass, 0, 0.98, 0.6);
+    windshield.rotation.x = -0.55;
     for (const sx of [-1, 1]) {
-      box(0.05, 0.28, 1.2, glass, 0.68 * sx, 1.0, -0.18);
+      box(0.045, 0.24, 1.15, glass, 0.62 * sx, 0.98, -0.2);
+      const pillar = box(0.05, 0.05, 1.2, paint, 0.6 * sx, 0.99, 0.6);
+      pillar.rotation.x = -0.55;
     }
-    box(1.32, 0.1, 0.98, paint, 0, 1.18, -0.3);
-    const rearGlass = box(1.26, 0.06, 0.9, glass, 0, 1.0, -0.98);
+    box(1.2, 0.09, 0.95, paint, 0, 1.15, -0.3);
+    box(0.18, 0.02, 0.9, carbon, 0, 1.2, -0.3);
+    const rearGlass = box(1.18, 0.05, 0.85, glass, 0, 0.99, -0.95);
     rearGlass.rotation.x = 0.5;
 
-    // 后翼子板 / 引擎盖 / 尾翼
-    box(1.94, 0.4, 1.55, paint, 0, 0.76, -1.3);
-    box(1.7, 0.07, 0.95, carbon, 0, 1.0, -1.85);
-    for (const dz of [-1.72, -1.86, -2.0]) {
-      box(1.5, 0.03, 0.05, silver, 0, 1.05, dz);
+    // 引擎舱散热格栅
+    box(1.56, 0.06, 0.95, carbon, 0, 1.0, -1.9);
+    for (let i = 0; i < 4; i++) {
+      box(1.36, 0.025, 0.06, silver, 0, 1.04, -1.65 - i * 0.17);
     }
-    box(1.86, 0.06, 0.34, carbon, 0, 1.14, -2.12);
+
+    // 尾翼
+    box(1.7, 0.05, 0.3, carbon, 0, 1.24, -2.18);
     for (const sx of [-1, 1]) {
-      box(0.06, 0.14, 0.32, carbon, 0.85 * sx, 1.08, -2.12);
+      box(0.05, 0.18, 0.34, carbon, 0.85 * sx, 1.15, -2.18);
+      box(0.06, 0.22, 0.12, carbon, 0.5 * sx, 1.1, -2.16);
     }
 
     // 尾部：尾灯 / 扩散器 / 四出排气
-    box(1.86, 0.32, 0.32, paint, 0, 0.62, -2.28);
-    box(1.8, 0.2, 0.45, carbon, 0, 0.36, -2.18);
-    for (const sx of [-0.55, 0.55]) {
-      box(0.58, 0.09, 0.06, tailMat, sx, 0.84, -2.44);
+    box(1.84, 0.3, 0.3, paint, 0, 0.6, -2.3);
+    for (const sx of [-1, 1]) {
+      const lamp = box(0.55, 0.07, 0.05, tailMat, 0.52 * sx, 0.82, -2.46);
+      lamp.rotation.y = 0.16 * sx;
     }
-    for (const sx of [-0.52, -0.34, 0.34, 0.52]) {
+    box(1.1, 0.1, 0.05, carbon, 0, 0.62, -2.46);
+    box(1.7, 0.16, 0.5, carbon, 0, 0.32, -2.18);
+    for (const sx of [-0.5, 0, 0.5]) {
+      box(0.04, 0.2, 0.52, carbon, sx, 0.33, -2.2);
+    }
+    for (const sx of [-0.42, -0.3, 0.3, 0.42]) {
       const pipe = add(
-        new THREE.CylinderGeometry(0.065, 0.065, 0.14, 10), silver,
-        sx, 0.47, -2.42
+        new THREE.CylinderGeometry(0.06, 0.06, 0.18, 10), silver,
+        sx, 0.47, -2.44
       );
       pipe.rotation.x = Math.PI / 2;
     }
 
     // 车轮
-    const tireGeo = new THREE.CylinderGeometry(0.43, 0.43, 0.3, 22);
+    const tireGeo = new THREE.CylinderGeometry(0.47, 0.47, 0.32, 24);
     tireGeo.rotateZ(Math.PI / 2);
-    const ringGeo = new THREE.TorusGeometry(0.23, 0.03, 8, 22);
-    const spokeGeo = new THREE.BoxGeometry(0.04, 0.3, 0.06);
-    const hubGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.34, 10);
+    const ringGeo = new THREE.TorusGeometry(0.26, 0.032, 8, 24);
+    const spokeGeo = new THREE.BoxGeometry(0.04, 0.34, 0.055);
+    const hubGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.36, 10);
     hubGeo.rotateZ(Math.PI / 2);
+    const discGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.05, 20);
+    discGeo.rotateZ(Math.PI / 2);
 
     const wheels = [];
     const frontWheels = [];
-    for (const z of [1.48, -1.45]) {
-      for (const sx of [-0.94, 0.94]) {
+    for (const z of [1.5, -1.48]) {
+      for (const sx of [-0.92, 0.92]) {
         const w = new THREE.Group();
         w.add(new THREE.Mesh(tireGeo, tireMat));
 
@@ -712,16 +743,20 @@
           w.add(spoke);
         }
         w.add(new THREE.Mesh(hubGeo, silver));
+        w.add(new THREE.Mesh(discGeo, discMat));
 
-        w.position.set(sx, 0.43, z);
+        w.position.set(sx, 0.47, z);
         car.add(w);
         wheels.push(w);
         if (z > 0) frontWheels.push(w);
+
+        // 刹车卡钳
+        box(0.1, 0.18, 0.16, paint, sx, 0.62, z + 0.24);
       }
     }
 
     const shadow = new THREE.Mesh(
-      new THREE.PlaneGeometry(3.4, 6.4),
+      new THREE.PlaneGeometry(3.6, 6.6),
       new THREE.MeshBasicMaterial({
         map: makeShadowTexture(), transparent: true, depthWrite: false,
       })
