@@ -523,6 +523,7 @@
     for (const z of [1.86, -1.92]) {
       for (const sx of [-1.5, 1.5]) {
         const w = new THREE.Group();
+        w.rotation.order = 'YXZ';
         w.add(new THREE.Mesh(tireGeo, tireMat));
 
         const ring = new THREE.Mesh(ringGeo, metalMat);
@@ -575,7 +576,7 @@
     car.add(shadow);
 
     scene.add(car);
-    return { car, wheels, frontWheels };
+    return { car, wheels, frontWheels, spinRate: 1.1 };
   }
 
   // ---------- 兰博基尼 ----------
@@ -731,6 +732,7 @@
     for (const z of [1.5, -1.48]) {
       for (const sx of [-0.92, 0.92]) {
         const w = new THREE.Group();
+        w.rotation.order = 'YXZ';
         w.add(new THREE.Mesh(tireGeo, tireMat));
 
         const ring = new THREE.Mesh(ringGeo, silver);
@@ -766,7 +768,7 @@
     car.add(shadow);
 
     scene.add(car);
-    return { car, wheels, frontWheels };
+    return { car, wheels, frontWheels, spinRate: 2.1 };
   }
 
   const CAR_KEY = 'speed-track-car';
@@ -1059,8 +1061,11 @@
     car.rotation.z = -steer * 0.05 * speedFactor;
     car.rotation.x = Math.max(-0.06, Math.min(0.06, -speed * 0.0009));
 
-    // 车轮转动
-    for (const w of carRig.wheels) w.rotation.x += speed * dt * 1.9;
+    // 车轮转动（限制角度范围，避免长时间累积误差）
+    const spinRate = carRig.spinRate || 1.9;
+    for (const w of carRig.wheels) {
+      w.rotation.x = (w.rotation.x + speed * dt * spinRate) % (Math.PI * 2);
+    }
     for (const w of carRig.frontWheels) w.rotation.y = steer * 0.42;
 
     // 圈数 / 出界判定（每 2 帧一次即可）
