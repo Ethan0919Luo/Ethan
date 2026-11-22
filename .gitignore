@@ -4,8 +4,3 @@ __pycache__/
 venv/
 data/
 .DS_Store
-
-# 部署适配包自带的骨架与压缩包，不进入项目仓库
-starter/
-deploy-kit-v1/
-deploy-kit-v1.zip
