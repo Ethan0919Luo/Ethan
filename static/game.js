@@ -578,8 +578,166 @@
     return { car, wheels, frontWheels };
   }
 
-  const carRig = makeCar();
-  const car = carRig.car;
+  // ---------- 兰博基尼 ----------
+  function makeLamborghini() {
+    const car = new THREE.Group();
+
+    const paint = new THREE.MeshStandardMaterial({
+      color: 0xf5c400, metalness: 0.62, roughness: 0.26,
+    });
+    const paintDark = new THREE.MeshStandardMaterial({
+      color: 0xd9a900, metalness: 0.55, roughness: 0.35,
+    });
+    const carbon = new THREE.MeshStandardMaterial({
+      color: 0x121418, metalness: 0.55, roughness: 0.42,
+    });
+    const glass = new THREE.MeshStandardMaterial({
+      color: 0x0d151d, metalness: 0.9, roughness: 0.08,
+    });
+    const silver = new THREE.MeshStandardMaterial({
+      color: 0xcfd5dd, metalness: 0.95, roughness: 0.2,
+    });
+    const tireMat = new THREE.MeshStandardMaterial({
+      color: 0x0f1115, roughness: 0.95,
+    });
+    const headMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff, emissive: 0xdfefff, emissiveIntensity: 1.4,
+    });
+    const tailMat = new THREE.MeshStandardMaterial({
+      color: 0xff2a20, emissive: 0xff1208, emissiveIntensity: 1.6,
+    });
+
+    const add = (geo, mat, x, y, z) => {
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(x, y, z);
+      car.add(mesh);
+      return mesh;
+    };
+    const box = (w, h, d, mat, x, y, z) =>
+      add(new THREE.BoxGeometry(w, h, d), mat, x, y, z);
+
+    // 底盘 / 车体
+    box(1.9, 0.18, 4.5, carbon, 0, 0.3, 0);
+    box(1.78, 0.42, 3.5, paint, 0, 0.6, 0.05);
+
+    // 前部楔形车头
+    const nose = box(1.68, 0.28, 1.6, paint, 0, 0.58, 1.95);
+    nose.rotation.x = -0.05;
+    box(1.86, 0.1, 0.62, carbon, 0, 0.3, 2.5);
+    box(1.74, 0.26, 0.34, paint, 0, 0.48, 2.46);
+    box(0.92, 0.16, 0.1, carbon, 0, 0.36, 2.6);
+    const hood = box(1.56, 0.1, 1.42, paintDark, 0, 0.8, 1.4);
+    hood.rotation.x = 0.05;
+    box(0.035, 0.03, 1.2, carbon, -0.5, 0.86, 1.42);
+    box(0.035, 0.03, 1.2, carbon, 0.5, 0.86, 1.42);
+
+    // 前大灯
+    for (const sx of [-1, 1]) {
+      const lamp = box(0.56, 0.09, 0.1, headMat, 0.56 * sx, 0.74, 2.4);
+      lamp.rotation.y = 0.3 * sx;
+      lamp.rotation.x = -0.1;
+    }
+
+    // 侧裙 / 进气口 / 后视镜 / 轮眉
+    for (const sx of [-1, 1]) {
+      box(0.1, 0.2, 2.3, carbon, 0.9 * sx, 0.4, 0.1);
+      const intake = box(0.1, 0.26, 0.95, carbon, 0.92 * sx, 0.82, -1.05);
+      intake.rotation.z = 0.07 * sx;
+      box(0.03, 0.03, 0.22, carbon, 0.86 * sx, 1.0, 0.6);
+      const mirror = box(0.24, 0.08, 0.1, paint, 0.97 * sx, 1.03, 0.66);
+      mirror.rotation.y = -0.15 * sx;
+
+      for (const fz of [1.48, -1.45]) {
+        box(0.32, 0.16, 1.0, paint, 0.94 * sx, 0.9, fz);
+      }
+    }
+
+    // 座舱
+    const windshield = box(1.38, 0.06, 1.2, glass, 0, 1.0, 0.62);
+    windshield.rotation.x = -0.5;
+    for (const sx of [-1, 1]) {
+      box(0.05, 0.28, 1.2, glass, 0.68 * sx, 1.0, -0.18);
+    }
+    box(1.32, 0.1, 0.98, paint, 0, 1.18, -0.3);
+    const rearGlass = box(1.26, 0.06, 0.9, glass, 0, 1.0, -0.98);
+    rearGlass.rotation.x = 0.5;
+
+    // 后翼子板 / 引擎盖 / 尾翼
+    box(1.94, 0.4, 1.55, paint, 0, 0.76, -1.3);
+    box(1.7, 0.07, 0.95, carbon, 0, 1.0, -1.85);
+    for (const dz of [-1.72, -1.86, -2.0]) {
+      box(1.5, 0.03, 0.05, silver, 0, 1.05, dz);
+    }
+    box(1.86, 0.06, 0.34, carbon, 0, 1.14, -2.12);
+    for (const sx of [-1, 1]) {
+      box(0.06, 0.14, 0.32, carbon, 0.85 * sx, 1.08, -2.12);
+    }
+
+    // 尾部：尾灯 / 扩散器 / 四出排气
+    box(1.86, 0.32, 0.32, paint, 0, 0.62, -2.28);
+    box(1.8, 0.2, 0.45, carbon, 0, 0.36, -2.18);
+    for (const sx of [-0.55, 0.55]) {
+      box(0.58, 0.09, 0.06, tailMat, sx, 0.84, -2.44);
+    }
+    for (const sx of [-0.52, -0.34, 0.34, 0.52]) {
+      const pipe = add(
+        new THREE.CylinderGeometry(0.065, 0.065, 0.14, 10), silver,
+        sx, 0.47, -2.42
+      );
+      pipe.rotation.x = Math.PI / 2;
+    }
+
+    // 车轮
+    const tireGeo = new THREE.CylinderGeometry(0.43, 0.43, 0.3, 22);
+    tireGeo.rotateZ(Math.PI / 2);
+    const ringGeo = new THREE.TorusGeometry(0.23, 0.03, 8, 22);
+    const spokeGeo = new THREE.BoxGeometry(0.04, 0.3, 0.06);
+    const hubGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.34, 10);
+    hubGeo.rotateZ(Math.PI / 2);
+
+    const wheels = [];
+    const frontWheels = [];
+    for (const z of [1.48, -1.45]) {
+      for (const sx of [-0.94, 0.94]) {
+        const w = new THREE.Group();
+        w.add(new THREE.Mesh(tireGeo, tireMat));
+
+        const ring = new THREE.Mesh(ringGeo, silver);
+        ring.rotation.y = Math.PI / 2;
+        w.add(ring);
+
+        for (let k = 0; k < 5; k++) {
+          const spoke = new THREE.Mesh(spokeGeo, silver);
+          spoke.rotation.x = (k * Math.PI) / 5;
+          w.add(spoke);
+        }
+        w.add(new THREE.Mesh(hubGeo, silver));
+
+        w.position.set(sx, 0.43, z);
+        car.add(w);
+        wheels.push(w);
+        if (z > 0) frontWheels.push(w);
+      }
+    }
+
+    const shadow = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.4, 6.4),
+      new THREE.MeshBasicMaterial({
+        map: makeShadowTexture(), transparent: true, depthWrite: false,
+      })
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.y = 0.03;
+    car.add(shadow);
+
+    scene.add(car);
+    return { car, wheels, frontWheels };
+  }
+
+  const CAR_KEY = 'speed-track-car';
+  let carModel = localStorage.getItem(CAR_KEY) === 'lambo' ? 'lambo' : 'f1';
+  let carRig = carModel === 'lambo' ? makeLamborghini() : makeCar();
+  let car = carRig.car;
 
   // ---------- 车辆状态与物理 ----------
   const MAX_SPEED = 62;
@@ -791,6 +949,34 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
   }
+
+  function switchCar(model) {
+    if (model === carModel) return;
+    carModel = model;
+
+    const pos = car.position.clone();
+    scene.remove(carRig.car);
+    carRig = model === 'lambo' ? makeLamborghini() : makeCar();
+    car = carRig.car;
+    car.position.copy(pos);
+    car.rotation.y = heading;
+    car.rotation.z = 0;
+
+    document.querySelectorAll('.car-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.model === model);
+    });
+    try {
+      localStorage.setItem(CAR_KEY, model);
+    } catch (err) {
+      // 隐私模式下写入失败不影响游戏
+    }
+    showToast(model === 'lambo' ? '已换车：兰博基尼' : '已换车：F1 赛车');
+  }
+
+  document.querySelectorAll('.car-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.model === carModel);
+    btn.addEventListener('click', () => switchCar(btn.dataset.model));
+  });
 
   restartBtn.addEventListener('click', () => {
     resetRace();

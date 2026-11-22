@@ -236,11 +236,46 @@ a { color: inherit; }
 
 .hud-bottom {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
   padding-bottom: 2px;
 }
 
 .hud-bottom form { margin: 0; }
+
+/* ---------- 车库选车 ---------- */
+.garage {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(10, 13, 18, 0.66);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+
+.car-btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.car-btn:hover { color: var(--text); }
+
+.car-btn.active {
+  background: linear-gradient(135deg, #ff5a3c, #ff2d55);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.3);
+}
 
 /* ---------- 排行榜浮层 ---------- */
 .leaderboard {
